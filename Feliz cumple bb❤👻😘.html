@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regalo de Cumpleaños Animado con Sonido</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Mali:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Mali', cursive;
+      background-color: #ffeef2;
+      overflow-x: hidden;
+    }
+    
+    .font-title {
+      font-family: 'Fredoka One', cursive;
+    }
+
+    /* Banderines / Guirnaldas superior */
+    .bunting-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .flag {
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-top: 35px solid #ff9ebb;
+      animation: swing 3s ease-in-out infinite alternate;
+      transform-origin: top center;
+    }
+
+    .flag:nth-child(even) {
+      border-top-color: #ffb7c5;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes swing {
+      0% { transform: rotate(-5deg); }
+      100% { transform: rotate(5deg); }
+    }
+
+    /* Brillos de fondo */
+    .sparkle {
+      position: absolute;
+      background: white;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      animation: pulse 1.5s infinite alternate ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.6) rotate(0deg); opacity: 0.4; }
+      100% { transform: scale(1.1) rotate(15deg); opacity: 1; }
+    }
+
+    /* Animaciones del Regalo y Carta */
+    .gift-lid {
+      transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      transform-origin: top left;
+    }
+
+    .gift-open .gift-lid {
+      transform: translateY(-80px) rotate(-25deg);
+    }
+
+    .card-popup {
+      transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: scale(0.1) translateY(100px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .card-popup.active {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Flotación suave */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* Animación del texto principal */
+    .text-pop {
+      animation: textPop 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes textPop {
+      0% { opacity: 0; transform: scale(0.5) translateY(-20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 relative bg-pink-100 selection:bg-pink-300">
+
+  <!-- Guirnalda Superior -->
+  <div class="bunting-container px-4">
+    <div class="flag"></div><div class="flag"></div><div class="flag"></div>
+    <div class="flag"></div><div class="flag"></div><div class="flag"></div>
+    <div class="flag"></div><div class="flag"></div><div class="flag"></div>
+    <div class="flag"></div><div class="flag"></div><div class="flag"></div>
+  </div>
+
+  <!-- Botón de Música -->
+  <button id="music-btn" onclick="toggleMusic()" class="absolute top-4 right-4 z-50 bg-white/80 backdrop-blur text-pink-500 font-bold px-4 py-2 rounded-full shadow-md hover:bg-white transition flex items-center gap-2 text-sm">
+    <span id="music-icon">🎵</span> <span id="music-text">Activar Música</span>
+  </button>
+
+  <!-- Brillos Decorativos de Fondo -->
+  <div class="sparkle w-6 h-6 top-16 left-12" style="animation-delay: 0.1s;"></div>
+  <div class="sparkle w-8 h-8 top-28 right-16" style="animation-delay: 0.4s;"></div>
+  <div class="sparkle w-5 h-5 bottom-24 left-20" style="animation-delay: 0.7s;"></div>
+  <div class="sparkle w-7 h-7 bottom-32 right-24" style="animation-delay: 0.2s;"></div>
+
+  <!-- Encabezado Principal -->
+  <div class="text-center z-10 mb-6 text-pop">
+    <h1 class="font-title text-5xl md:text-6xl text-pink-500 drop-shadow-md tracking-wide">
+      ¡Feliz Cumpleaños!
+    </h1>
+    <p class="text-pink-400 font-bold mt-2 text-lg">
+      Desde el fondo de mi corazón❤️👻😘
+    </p>
+  </div>
+
+  <!-- Contenedor Principal Interactiva -->
+  <div class="relative w-full max-w-md flex flex-col items-center justify-center min-h-[380px]">
+
+    <!-- Oso Animado con Globos -->
+    <div id="bear-character" class="flex flex-col items-center mb-4 animate-float cursor-pointer transition-transform hover:scale-105">
+      <!-- Globos -->
+      <div class="flex gap-2 mb-[-15px] z-0">
+        <div class="w-8 h-10 bg-pink-400 rounded-full shadow-inner transform -rotate-12"></div>
+        <div class="w-9 h-11 bg-red-400 rounded-full shadow-inner transform rotate-6"></div>
+        <div class="w-8 h-10 bg-purple-300 rounded-full shadow-inner transform rotate-12"></div>
+      </div>
+      <!-- Oso CUTE SVG -->
+      <svg class="w-32 h-32 z-10 drop-shadow-lg" viewBox="0 0 100 100">
+        <!-- Orejas -->
+        <circle cx="30" cy="30" r="12" fill="#8d5b4c"/>
+        <circle cx="30" cy="30" r="6" fill="#ffb7c5"/>
+        <circle cx="70" cy="30" r="12" fill="#8d5b4c"/>
+        <circle cx="70" cy="30" r="6" fill="#ffb7c5"/>
+        <!-- Cabeza -->
+        <circle cx="50" cy="50" r="30" fill="#a06e5d"/>
+        <!-- Hocico -->
+        <ellipse cx="50" cy="57" rx="12" ry="9" fill="#fff3e0"/>
+        <ellipse cx="50" cy="53" rx="4" ry="3" fill="#3e2723"/>
+        <!-- Ojos -->
+        <circle cx="38" cy="48" r="3" fill="#3e2723"/>
+        <circle cx="62" cy="48" r="3" fill="#3e2723"/>
+        <!-- Mejillas Rosadas -->
+        <ellipse cx="33" cy="55" rx="4" ry="2" fill="#ff8a80" opacity="0.6"/>
+        <ellipse cx="67" cy="55" rx="4" ry="2" fill="#ff8a80" opacity="0.6"/>
+      </svg>
+      <span class="bg-white/80 backdrop-blur text-pink-600 px-3 py-1 rounded-full text-xs font-bold shadow-sm mt-1">
+        Te amo mucho 🥰✨
+      </span>
+    </div>
+
+    <!-- Caja de Regalo Interactiva -->
+    <div id="gift-box" onclick="toggleGift()" class="cursor-pointer relative z-20 group transition-transform active:scale-95">
+      <div id="gift-container" class="relative w-44 h-40">
+        
+        <!-- Tapa del Regalo -->
+        <div class="gift-lid absolute top-0 left-[-5%] w-[110%] h-10 bg-pink-400 rounded-md shadow-md z-30 flex justify-center items-center">
+          <!-- Moño -->
+          <div class="absolute -top-5 flex items-center justify-center">
+            <div class="w-8 h-8 bg-red-400 rounded-full border-2 border-pink-200 transform -rotate-45"></div>
+            <div class="w-8 h-8 bg-red-400 rounded-full border-2 border-pink-200 transform rotate-45 -ml-3"></div>
+          </div>
+          <!-- Cinta Vertical en la Tapa -->
+          <div class="w-6 h-full bg-red-400"></div>
+        </div>
+
+        <!-- Cuerpo del Regalo -->
+        <div class="w-full h-32 absolute bottom-0 bg-pink-300 rounded-b-lg shadow-xl overflow-hidden flex justify-center border-t-2 border-pink-400">
+          <!-- Cinta Vertical en la Base -->
+          <div class="w-6 h-full bg-red-400"></div>
+          <!-- Etiqueta / Texto -->
+          <span class="absolute bottom-3 text-xs font-bold text-white bg-pink-400/80 px-2 py-0.5 rounded">
+            ¡Haz Clic para Abrir! 🎁
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Carta Sorpresa Pop-up -->
+    <div id="popup-card" class="card-popup absolute z-40 w-80 bg-white/95 backdrop-blur-md p-6 rounded-2xl shadow-2xl border-4 border-pink-200 text-center">
+      <!-- Botón para cerrar -->
+      <button onclick="toggleGift()" class="absolute top-2 right-3 text-pink-400 hover:text-pink-600 font-bold text-xl">
+        ✕
+      </button>
+
+      <!-- Ilustración dentro de la Carta -->
+      <div class="flex justify-center mb-3">
+        <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center text-3xl shadow-inner">
+          🎂
+        </div>
+      </div>
+
+      <h3 class="font-title text-pink-500 text-2xl mb-1">Para Ti ❤️</h3>
+      <p class="text-gray-600 text-sm leading-relaxed mb-4">
+        ¡Deseándote el mejor de los cumpleaños! Que tu día esté lleno de amor, sonrisas, pastel e infinitos momentos de felicidad.
+      </p>
+
+      <div class="bg-pink-50 p-2 rounded-xl text-xs text-pink-500 font-bold">
+        ✨ ¡Que todos tus deseos se hagan realidad! ✨
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Firma / Pie de página -->
+  <footer class="mt-8 text-center text-xs text-pink-400 font-semibold">
+    Creado para una persona especial 💕
+  </footer>
+
+  <!-- Lógica JavaScript y Sistema de Audio -->
+  <script>
+    let isOpen = false;
+    let audioCtx = null;
+    let isMusicPlaying = false;
+    let musicInterval = null;
+
+    // Inicializar Contexto de Audio
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    // Efecto de sonido al abrir el regalo (Fanfarria/Magia)
+    function playOpenSound() {
+      initAudio();
+      const notes = [261.63, 329.63, 392.00, 523.25, 659.25]; // C4, E4, G4, C5, E5
+      notes.forEach((freq, index) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + index * 0.08);
+        
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime + index * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + index * 0.08 + 0.3);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start(audioCtx.currentTime + index * 0.08);
+        osc.stop(audioCtx.currentTime + index * 0.08 + 0.3);
+      });
+    }
+
+    // Melodía de "Cumpleaños Feliz" sintética
+    function playBirthdaySong() {
+      initAudio();
+      const notes = [
+        {f: 261.63, d: 0.3}, {f: 261.63, d: 0.3}, {f: 293.66, d: 0.6}, {f: 261.63, d: 0.6}, {f: 349.23, d: 0.6}, {f: 329.63, d: 1.0},
+        {f: 261.63, d: 0.3}, {f: 261.63, d: 0.3}, {f: 293.66, d: 0.6}, {f: 261.63, d: 0.6}, {f: 392.00, d: 0.6}, {f: 349.23, d: 1.0},
+        {f: 261.63, d: 0.3}, {f: 261.63, d: 0.3}, {f: 523.25, d: 0.6}, {f: 440.00, d: 0.6}, {f: 349.23, d: 0.6}, {f: 329.63, d: 0.6}, {f: 293.66, d: 0.8}
+      ];
+
+      let now = audioCtx.currentTime;
+      notes.forEach(note => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(note.f, now);
+
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + note.d);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + note.d);
+
+        now += note.d + 0.05;
+      });
+    }
+
+    function toggleMusic() {
+      const btnText = document.getElementById('music-text');
+      const btnIcon = document.getElementById('music-icon');
+
+      if (!isMusicPlaying) {
+        playBirthdaySong();
+        isMusicPlaying = true;
+        btnText.innerText = "Música Activa";
+        btnIcon.innerText = "🔊";
+      } else {
+        isMusicPlaying = false;
+        btnText.innerText = "Activar Música";
+        btnIcon.innerText = "🎵";
+      }
+    }
+
+    function toggleGift() {
+      const giftContainer = document.getElementById('gift-container');
+      const popupCard = document.getElementById('popup-card');
+
+      isOpen = !isOpen;
+
+      if (isOpen) {
+        playOpenSound();
+        // Si la música no está activa, iniciarla al abrir
+        if (!isMusicPlaying) toggleMusic();
+
+        giftContainer.classList.add('gift-open');
+        setTimeout(() => {
+          popupCard.classList.add('active');
+        }, 300);
+      } else {
+        popupCard.classList.remove('active');
+        setTimeout(() => {
+          giftContainer.classList.remove('gift-open');
+        }, 200);
+      }
+    }
+  </script>
+</body>
+</html>
